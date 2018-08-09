@@ -1,0 +1,98 @@
+COMPILER Subs
+
+CHARACTERS
+  letra = 'a'..'z' + 'A'..'Z' .
+
+TOKENS
+  palavra = letra {letra} .
+
+COMMENTS FROM "/*" TO "*/" NESTED
+
+IGNORE '\r' + '\n' + '\t'
+
+PRODUCTIONS
+
+  Subs = { palavra palavra Frase ";" } EOF .
+  Frase = palavra { palavra } .
+
+END Subs.
+
+=====================================================
+
+COMPILER Subs
+
+String source, target;
+
+CHARACTERS
+  letra = 'a'..'z' + 'A'..'Z' .
+
+TOKENS
+  palavra = letra {letra} .
+
+COMMENTS FROM "/*" TO "*/" NESTED
+
+IGNORE '\r' + '\n' + '\t'
+
+PRODUCTIONS
+
+  Subs 	
+  = { palavra 	(. source = t.val; .)
+      palavra 	(. target = t.val; .)
+      Frase 
+      ";" 
+    } EOF 
+  .
+
+  Frase 	(. String novaFrase = ""; .)
+  = palavra 	(. if (t.val.equals(source)) 
+                      novaFrase += target + " ";
+                   else
+                      novaFrase += t.val + " "; .)
+    { palavra 	(. if (t.val.equals(source)) 
+                      novaFrase += target + " ";
+                   else
+                      novaFrase += t.val + " "; .)
+    } 		(. System.out.println("= " + novaFrase); .)
+  .
+
+END Subs.
+
+=====================================================
+
+COMPILER Subs
+
+CHARACTERS
+  letra = 'a'..'z' + 'A'..'Z' .
+
+TOKENS
+  palavra = letra {letra} .
+
+COMMENTS FROM "/*" TO "*/" NESTED
+
+IGNORE '\r' + '\n' + '\t'
+
+PRODUCTIONS
+
+  Subs 			  (. String f, s = "", tw = ""; .)	
+  = { palavra 	 	  (. s = t.val; .)
+      palavra 		  (. tw = t.val; .)
+      Frase<out f, s, tw> (. System.out.println("= " + f); .) 
+      ";" 
+    } EOF 
+  .
+
+  Frase<out String f, String s, String tw> 
+			  (. f = ""; .)		
+  = palavra 		  (. if (t.val.equals(s)) 
+                                f += tw + " ";
+                             else
+                                f += t.val + " "; .)
+    { palavra 		  (. if (t.val.equals(s)) 
+                                f += tw + " ";
+                             else
+                                f += t.val + " "; .)
+    }
+  .
+
+END Subs.
+

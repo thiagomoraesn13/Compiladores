@@ -1,0 +1,39 @@
+COMPILER Subs
+
+String source, target;
+
+CHARACTERS
+  letra = 'a'..'z' + 'A'..'Z' .
+
+TOKENS
+  palavra = letra {letra} .
+
+COMMENTS FROM "/*" TO "*/" NESTED
+
+IGNORE '\r' + '\n' + '\t'
+
+PRODUCTIONS
+
+  Subs = Linha { Linha } .
+
+  Linha 	
+  = palavra 	(. source = t.val; .)
+    palavra 	(. target = t.val; .)
+    Frase 
+    ";" 
+  .
+
+  Frase 	(. String novaFrase = ""; .)
+  = palavra 	(. if (t.val.equals(source)) 
+                      novaFrase += target + " ";
+                   else
+                      novaFrase += t.val + " "; .)
+    { palavra 	(. if (t.val.equals(source)) 
+                      novaFrase += target + " ";
+                   else
+                      novaFrase += t.val + " "; .)
+    } 		(. System.out.println("= " + novaFrase); .)
+  .
+
+END Subs.
+

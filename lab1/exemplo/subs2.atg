@@ -1,0 +1,37 @@
+COMPILER Subs
+
+CHARACTERS
+  letra = 'a'..'z' + 'A'..'Z' .
+
+TOKENS
+  palavra = letra {letra} .
+
+COMMENTS FROM "/*" TO "*/" NESTED
+
+IGNORE '\r' + '\n' + '\t'
+
+PRODUCTIONS
+
+  Subs = Linha { Linha } .
+
+  Linha 		  (. String f, s = "", tw = ""; .)	
+  = palavra 	 	  (. s = t.val; .)
+    palavra 		  (. tw = t.val; .)
+    Frase<out f, s, tw>   (. System.out.println("= " + f); .) 
+  .
+
+  Frase<out String f, String s, String tw> 
+			  (. f = ""; .)		
+  = palavra 		  (. if (t.val.equals(s)) 
+                                f += tw + " ";
+                             else
+                                f += t.val + " "; .)
+    { palavra 		  (. if (t.val.equals(s)) 
+                                f += tw + " ";
+                             else
+                                f += t.val + " "; .)
+    }
+  .
+
+END Subs.
+

@@ -1,0 +1,40 @@
+COMPILER ATG
+
+CHARACTERS
+  digito = "0123456789" .
+
+TOKENS
+  numero = digito { digito } .
+
+COMMENTS FROM "/*" TO "*/" NESTED
+
+IGNORE '\r' + '\t'
+
+PRODUCTIONS
+
+  ATG = Linha { Linha } .
+  
+  Linha = 				(. String val = ""; .)
+    Exp<out val> "\n" 	(. System.out.println("infixa: " + val); .) 
+  .
+   		
+  Exp<out String val> 	(. String v1 = "", v2 = ""; val = ""; .)
+  = T<out v1>  			(. val = v1; .)
+    { "+" T<out v2>  	(. val = "+ " + val + v2; .)
+    } 
+  .
+  
+  T<out String val> 	(. String v1 = "", v2 = ""; val = ""; .)
+  = F<out v1> 			(. val = v1; .)
+    { "*" F<out v2>		(. val = "* " + val + v2; .)
+    } 
+  .
+  
+  F<out String fval>	(. fval = ""; String val = ""; .) 
+  = numero				(. fval = t.val + " "; .) 
+  | "(" Exp<out val> 	(. fval = val; .)
+    ")" 
+  .
+
+END ATG.
+

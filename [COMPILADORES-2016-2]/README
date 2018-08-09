@@ -1,0 +1,19 @@
+Carlos Vicente & Thiago Moraes--> TP1 de Compiladores
+
+Para executar basta rodar o script
+
+chmod +x compila.sh
+
+./compila.sh
+
+
+
+Foram desenvolvidas as seguintes funcionalidades:
+1 - As operações de soma, subtração, divisão, multiplicação e resto estão funcionando perfeitamente
+    Incluindo com parênteses
+2 - As definições de variáveis também estão funcionando 100%
+3 - As constantes pi e de Euler também foram desenvolvidas
+4 - Os operadores relacionais retornam true ou false ao serem executados
+    O operador de "=" está projetado como "==".
+    Ex. 3>4 retorna false
+        4==4 retorna true

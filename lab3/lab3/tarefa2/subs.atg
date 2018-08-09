@@ -1,0 +1,33 @@
+/* gramatica substitution */
+import java.io.*;
+
+COMPILER Subs1
+
+public String substitute(String p, String s, String target)
+{
+	if (target.equals(p))
+		return s;
+	else
+		return target;
+}
+
+CHARACTERS
+	letter = 'A'..'Z' + 'a'..'z'.
+TOKENS
+	EOL = '\n'.
+	word = letter { letter }.
+IGNORE '\t' + '\r'
+
+PRODUCTIONS
+
+Subs1 = Line { Line }.
+	
+Line 		(. String p = "", s = ""; .)
+= word		(. p = t.val; .) 
+  word 		(. s = t.val; .)
+  word 		(. System.out.print(substitute(p, s, t.val)); .)
+  { word 	(. System.out.print(" " + substitute(p, s, t.val));.)
+  } EOL		(. System.out.print("\n"); .)
+.
+	
+END Subs1.

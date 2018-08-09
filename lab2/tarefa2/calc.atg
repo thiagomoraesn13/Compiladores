@@ -1,0 +1,20 @@
+COMPILER Calc
+
+    CHARACTERS
+      digit      = "0123456789" .
+      hexdigit   = digit + "ABCDEF" .
+
+    TOKENS
+      decNumber  =   digit { digit } [ "." { digit } ]
+                 |   "." digit { digit } .
+      hexNumber  =   "$" hexdigit { hexdigit } .
+
+    IGNORE '\n' + '\t' + '\r'
+
+    PRODUCTIONS
+      Calc       = { Expression "=" } EOF .
+      Expression = [ "+" | "-" ] Term { "+" Term  |  "-" Term } .
+      Term       = Factor { "*" Factor |  "/" Factor } .
+      Factor     = Primary { "!" } .
+      Primary    = decNumber | hexNumber | "(" Expression ")" | "abs" "(" Expression ")" .
+    END Calc.

@@ -1,0 +1,20 @@
+COMPILER Calc
+
+CHARACTERS
+    digito = "0123456789".
+
+TOKENS
+    numero = digito { digito } [ "." {digito} ]
+           | "." digito {digito} .
+
+IGNORE '\n' + '\t' + '\r'
+
+PRODUCTIONS
+
+    Calc = "calc" Exp { "calc" Exp }.
+    Exp = Termo { ("+" | "-") Termo } .
+    Termo = FatorPos { ("*" | "/") FatorPos } .
+	FatorPos = Fator ["!"] .
+	Fator = numero | "(" Exp ")" | "abs" "(" Exp ")".
+
+END Calc.

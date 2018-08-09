@@ -1,0 +1,27 @@
+COMPILER Familia
+
+CHARACTERS
+	digito = "0123456789".
+	mais = 'A'..'Z'.
+	minus = 'a'..'z'.
+	
+TOKENS
+	nomeProprio = mais { minus | mais | '-' | '\'' }.
+	palavra = minus { minus }.
+
+IGNORE '\n' + '\r' + '\t'
+
+PRODUCTIONS
+
+	Familia = "Sobrenome" ":" nomeProprio Secoes.
+	Secoes = Secao { Secao }.
+	Secao = Pais | Filhos.
+	Pais = "Pais" ":" NomeComentado { "," NomeComentado }.
+	Filhos = "Filhos" ":" NomeComentado { "," NomeComentado }.
+	
+	NomeComentado = Nome [ "(falecido)" ] [ Comentario ].
+	Comentario = "[" ( palavra | nomeProprio ) {palavra | nomeProprio} "]" . 
+	
+	Nome = nomeProprio { nomeProprio }.
+
+END Familia.

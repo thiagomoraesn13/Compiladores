@@ -1,0 +1,13 @@
+COMPILER Calc
+
+CHARACTERS
+	digito = "0123456789".
+TOKENS
+	numero = digito {digito}. 
+
+IGNORE  '\n' + '\r' + '\t'
+
+PRODUCTIONS
+Calc = {"calc" Exp} EOF.
+       Exp = numero { "+" numero }.
+END Calc.

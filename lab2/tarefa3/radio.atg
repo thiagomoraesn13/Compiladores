@@ -1,0 +1,14 @@
+COMPILER Radio
+
+PRODUCTIONS
+
+     Radio           =   { Entrevista | BoletimNoticias | "musica" | "propaganda" } EOF .
+     BoletimNoticias =   "propaganda" Noticia { Noticia } [ Clima ] Preenchimento .
+     Noticia         =   "Republicanos" [ "Trump" ] | "racismo" | [ "Trump" ] "Republicanos" | "xenofobia"
+                     |   "corrupção" | "comentario" "musica" | Acidente .
+     Entrevista      =   "apresentador" { "entrevistado" "apresentador" } [ Preenchimento ] .
+     Acidente        =   "colisão" "com" numero "de" "vitimas".
+     Preenchimento   =   "musica" | "propaganda"  .
+     Clima           =   { "chuva" | "nublado" | "ensolarado" | "seco" } .
+
+END Radio.

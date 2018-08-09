@@ -1,0 +1,20 @@
+COMPILER Subs
+
+CHARACTERS
+  letra = 'a'..'z' + 'A'..'Z' .
+
+TOKENS
+  palavra = letra {letra} .
+
+COMMENTS FROM "/*" TO "*/" NESTED
+
+IGNORE '\r' + '\n' + '\t'
+
+PRODUCTIONS
+
+  Subs = Linha { Linha } .
+  Linha = palavra palavra Frase ";" .
+  Frase = palavra { palavra } .
+
+END Subs.
+

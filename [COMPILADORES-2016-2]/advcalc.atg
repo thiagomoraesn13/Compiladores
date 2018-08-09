@@ -1,0 +1,164 @@
+import java.lang.Exception;
+import java.util.LinkedList;
+
+COMPILER AdvCalc
+
+Interpreter aci;
+
+public void setInterpreter (Interpreter aci){
+  this.aci = aci;
+}
+
+CHARACTERS
+  digit = "0123456789".
+  letter = 'A'..'Z' + 'a'..'z'.
+
+TOKENS
+  number = digit {digit} ['.' digit {digit}].
+  ident = letter {digit | letter}.
+
+COMMENTS FROM "/*" TO "*/" NESTED
+
+IGNORE '\n' + '\r' + '\t'
+
+PRODUCTIONS
+
+AdvCalc (.
+ASTExp adv = null;
+aci.global.simbols.put("pi", new ASTExp("3.1415927"));
+aci.global.simbols.put("e", new ASTExp("2.7182817"));
+.)
+= { CExp <out adv>}EOF
+.
+
+CExp <out ASTExp cexp>
+(.cexp = null;.)
+= Def
+| Exp <out cexp>
+(.
+  try{
+    System.out.println(aci.eval(cexp, aci.global));
+  }catch(Exception e){
+    System.out.println("Error!");
+  }
+.)
+.
+Def
+(.
+  ASTExp expr = null;
+  LinkedList<String> parametros = null;
+  String nome = "";
+.)
+= "def" ident (. nome = t.val; .)
+[ "(" ParamNames <out parametros> ")" ] "="
+Exp <out expr>
+(.
+  try{
+    // Se for variavel
+    if(parametros == null){
+      aci.global.simbols.put(nome, aci.eval(expr, aci.global));
+    }else{
+      // Se for uma funcao
+      expr.paramNames = parametros;
+      aci.global.simbols.put(nome, expr);
+    }
+
+    System.out.print(nome);
+    System.out.println(": " + aci.global.simbols.get(nome));
+  }catch(Exception e){}
+.)
+.
+
+ParamNames <out LinkedList paramNames>
+(.paramNames = new LinkedList<String>();.)
+= ident       (. paramNames.addLast(t.val); .)
+{ "," ident   (. paramNames.addLast(t.val); .)
+}
+.
+
+Exp <out ASTExp exp>
+(.ASTExp tmp = null;
+  ASTExp signal = null; .)
+= T <out exp>
+{(
+ "+" T <out tmp> (. signal = new ASTExp("+"); .)
+|"-" T <out tmp> (. signal = new ASTExp("-"); .)
+)
+(.
+  signal.addLast(exp);
+  signal.addLast(tmp);
+  exp = signal;
+.)}
+.
+
+T <out ASTExp t>
+(. t = null;
+   ASTExp u = null;
+   ASTExp signal = null;
+.)
+= U <out t>
+{(
+ "*" U <out u> (. signal = new ASTExp("*"); .)
+|"/" U <out u> (. signal = new ASTExp("/"); .)
+|"%" U <out u> (. signal = new ASTExp("%"); .)
+|">" U <out u> (. signal = new ASTExp(">"); .)
+|"<" U <out u> (. signal = new ASTExp("<"); .)
+|"==" U <out u> (. signal = new ASTExp("=="); .)
+|">=" U <out u> (. signal = new ASTExp(">="); .)
+|"<=" U <out u> (. signal = new ASTExp("<="); .)
+|"!=" U <out u> (. signal = new ASTExp("!="); .)
+
+)
+(.
+  signal.addLast(t);
+  signal.addLast(u);
+  t = signal;
+.)
+}
+.
+
+U <out ASTExp u>
+(. u = null; .)
+= (
+"-" F <out u>
+(.
+  ASTExp signal = new ASTExp("*");
+  signal.addLast(new ASTExp("-1"));
+  signal.addLast(u);
+  u = signal;
+.)
+|   F <out u>
+).
+
+F <out ASTExp f>
+(. f = null; .)
+= number (.f = new ASTExp(t.val) ;.)
+| VarOrFunc <out f>
+| IFExp | "(" Exp <out f> ")".
+
+VarOrFunc <out ASTExp var>
+(. LinkedList<String> paramNames = null;.)
+= ident (.var = new ASTExp(t.val);.)
+[ "(" Params <out paramNames> ")" ]
+(. if(paramNames != null) var.paramNames = paramNames; .)
+.
+
+Params <out LinkedList paramNames>
+(.ASTExp p = null;
+  paramNames = new LinkedList<String>();
+.)
+= Exp <out p>
+ (. try{paramNames.addLast(aci.eval(p, aci.global).value); } catch(Exception e){}.)
+ {","Exp <out p>
+ (. try{paramNames.addLast(aci.eval(p, aci.global).value); } catch(Exception e){}.)
+ }.
+
+IFExp (.ASTExp p = null;.)
+= "if" ExpL "then" Exp <out p> "else" Exp <out p>.
+
+ExpL (.ASTExp p = null;.)
+= Exp <out p> OpRel Exp <out p>.
+
+OpRel = ">" | ">=" | "<" | "<=" | "=" | "!=".
+
+END AdvCalc.
